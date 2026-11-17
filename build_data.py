@@ -9,7 +9,7 @@ import sys
 import tempfile
 from calendar import monthrange
 from collections import defaultdict
-from datetime import date
+from datetime import date, datetime
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from urllib.parse import urlsplit
@@ -68,7 +68,13 @@ def history_rows():
 
 
 def build():
-    cutoff = date.fromisoformat(json.loads((DATA / "release.json").read_text(encoding="utf-8-sig"))["asOf"])
+    release = json.loads((DATA / "release.json").read_text(encoding="utf-8-sig"))
+    cutoff = date.fromisoformat(release["asOf"])
+    checked_at = release.get("checkedAt", "")
+    if checked_at:
+        stamp = datetime.fromisoformat(checked_at)
+        if stamp.utcoffset() is None or stamp.date() != cutoff:
+            raise ValueError("checkedAt 应含时区且与 asOf 同日")
     as_of = cutoff.isoformat()
     countries, history = history_rows()
     _, ledger = read_csv("events.csv")
@@ -130,7 +136,7 @@ def build():
     observed_months = {r["month"] for r in monthly}
     if len(keys) != len(observed_months) * len(countries):
         raise ValueError("项目月表有国家缺行。整月资料缺口可保留国别行并留空估值。")
-    return dict(asOf=as_of, officialEnd=history[-1]["month"], countries=countries, history=history,
+    return dict(asOf=as_of, checkedAt=checked_at, officialEnd=history[-1]["month"], countries=countries, history=history,
                 monthly=monthly, events=events)
 
 

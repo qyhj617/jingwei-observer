@@ -73,7 +73,7 @@
   $('hero-span').textContent=months[0].slice(0,4)+'—'+latest.slice(0,4);
   $('hero-countries').textContent=countries.length;
   $('hero-events').textContent=data.events.length.toLocaleString('zh-CN');
-  $('footer-date').textContent='数据截至 '+dotDate(data.asOf);
+  $('footer-date').textContent='数据截至 '+dotDate(data.asOf)+(data.checkedAt ? ' '+new Intl.DateTimeFormat('zh-CN',{timeZone:'Asia/Shanghai',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date(data.checkedAt))+'（北京时间）' : '');
   function togglePopover(control,panel,open) {
     control.setAttribute('aria-expanded',String(open)); panel.hidden=!open;
   }

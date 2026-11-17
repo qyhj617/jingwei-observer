@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#103e40">
+  <meta name="description" content="按月查阅中国与十二国的双边政治关系分值、清华历史数据和逐项外交事件原文。">
+  <title>经纬观察 · 中国双边关系</title>
+  <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="data/site-data.js"></script>
+  <script defer src="chart.js"></script>
+  <script defer src="details.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">跳至内容</a>
+  <header class="mast">
+    <div class="shell mast-row">
+      <a class="brand" href="#overview" aria-label="经纬观察，返回数据总览"><img src="assets/mark.svg" alt="" width="34" height="34"><strong>经纬观察</strong></a>
+      <nav aria-label="主导航">
+        <a data-view="overview" href="#overview" aria-current="page">数据总览</a>
+        <a data-view="events" href="#events">事件档案</a>
+        <a data-view="method" href="#method">方法与来源</a>
+      </nav>
+      <div class="download-wrap">
+        <button class="download-button" id="download" aria-expanded="false" aria-controls="download-menu"><span data-icon="download"></span><span>下载数据</span></button>
+        <div id="download-menu" class="popover download-menu" hidden>
+          <a href="data/monthly.csv" download>项目逐月分值 <small>CSV</small></a>
+          <a href="data/events.csv" download>十二国事件账 <small>CSV</small></a>
+          <a href="data/history.csv" download>清华历史月表 <small>CSV</small></a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell" id="main" tabindex="-1">
+    <section id="overview" aria-label="数据总览">
+      <div class="hero">
+        <div class="hero-map" aria-hidden="true"></div>
+        <div class="hero-content">
+          <div class="hero-kicker"><i></i> 双边政治关系数据库</div>
+          <h1>中国双边关系观察</h1>
+          <p>回看中国与十二国的关系走势，沿着每个月的分值，查到当时的外交事件。</p>
+          <div class="hero-meta">
+            <span><b id="hero-span">—</b> 数据跨度</span>
+            <span><b id="hero-countries">—</b> 个国家</span>
+            <span><b id="hero-events">—</b> 条续算事件记录</span>
+          </div>
+        </div>
+        <span class="map-legend" aria-hidden="true"><i></i> 北京</span>
+      </div>
+
+      <div class="overview-bar">
+        <h2><span class="section-mark"></span>月度总览</h2>
+        <div class="period-control">
+          <span class="period-status" id="period-status"></span>
+          <div class="month-picker">
+            <button class="ico-button" id="prev-month" aria-label="上一个月"><span data-icon="left"></span></button>
+            <label><span class="sr-only">观察月份</span><input type="month" id="month-picker"></label>
+            <button class="ico-button" id="next-month" aria-label="下一个月"><span data-icon="right"></span></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard">
+        <div class="main-column">
+          <section class="panel trend-panel">
+            <div class="panel-head">
+              <div><h3>双边关系走势</h3><p class="sub" id="chart-period"></p></div>
+              <div class="segments" aria-label="走势图时间范围">
+                <button data-range="12" aria-pressed="false">近 1 年</button><button data-range="60" aria-pressed="true">近 5 年</button><button data-range="all" aria-pressed="false">全部</button>
+              </div>
+            </div>
+            <div class="series-controls">
+              <div class="chips" id="series-chips"></div>
+              <div class="chooser-wrap">
+                <button class="choose" id="choose" aria-expanded="false" aria-controls="country-menu"><span data-icon="settings"></span>选国家</button>
+                <fieldset class="popover country-menu" id="country-menu" hidden><legend class="sr-only">图上显示的国家</legend><div id="country-options"></div></fieldset>
+              </div>
+            </div>
+            <div id="chart"></div>
+            <div class="chart-caption"><div class="line-legend"><span><i></i>清华公布</span><span><i class="dashed"></i>项目估计</span></div><span class="chart-hint">选择月份查看记录 <span data-icon="pointer"></span></span></div>
+          </section>
+
+          <section class="panel focus-panel" id="focus-panel">
+            <div class="panel-head">
+              <div><h3>国别月度记录</h3><p class="sub" id="focus-period"></p></div>
+              <label class="focus-picker"><span class="sr-only">查看国家</span><select id="focus-select"></select></label>
+            </div>
+            <div id="focus-body"></div>
+          </section>
+        </div>
+
+        <aside class="panel rank-panel">
+          <div class="panel-head"><div><h3>当月关系分排名</h3><p class="sub" id="rank-period"></p></div><span class="rank-icon" data-icon="bars"></span></div>
+          <div class="rank-labels rank-grid"><span>排名 / 国家</span><span>近一年</span><span>关系分</span><span>环比</span></div>
+          <div id="rank-list"></div>
+          <p class="rank-foot" id="rank-foot"></p>
+        </aside>
+      </div>
+    </section>
+    <section id="events" class="other-view" aria-label="事件档案" hidden></section>
+    <section id="method" class="other-view" aria-label="方法与来源" hidden></section>
+    <noscript>交互图表需要启用 JavaScript。您也可以直接下载 <a href="data/monthly.csv">月度分值</a>、<a href="data/events.csv">事件账</a>和<a href="data/history.csv">历史月表</a>。</noscript>
+  </main>
+  <footer><div class="shell footer-row"><span><img src="assets/mark.svg" width="19" height="19" alt=""> 经纬观察</span><span id="footer-date"></span><a href="#method">方法与来源 <span aria-hidden="true">↗</span></a></div></footer>
+</body>
+</html>

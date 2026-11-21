@@ -56,7 +56,7 @@
     return s.official[m] ?? s.estimates[m] ?? null;
   }
   let month=latest, end=latest, span=60, focus='美国';
-  const selected=new Set(['美国','日本','俄罗斯','法国'].filter(c=>seriesMap.has(c)));
+  const selected=new Set(['美国','日本','俄罗斯','英国','法国','德国','印度'].filter(c=>seriesMap.has(c)));
   let pendingEventFilter=null;
   const monthInput=$('month-picker'), focusSelect=$('focus-select');
   monthInput.min=months[0]; monthInput.max=latest;
@@ -93,11 +93,20 @@
     }
     if(!selected.size) chips.textContent='请选择要比较的国家';
     $('country-options').querySelectorAll('input').forEach(input=>{input.checked=selected.has(input.value);});
+    $('countries-all').disabled=selected.size===countries.length;
+    $('countries-clear').disabled=selected.size===0;
   }
   function changeSeries(c) {
     if(selected.has(c)) selected.delete(c); else selected.add(c);
     seriesControls(); plot();
   }
+  function selectCountries(names) {
+    selected.clear();
+    for(const c of names) selected.add(c);
+    seriesControls(); plot();
+  }
+  $('countries-all').onclick=()=>selectCountries(countries);
+  $('countries-clear').onclick=()=>selectCountries([]);
   for(const c of countries) {
     const label=element('label'),input=element('input'); input.type='checkbox';input.value=c;
     input.addEventListener('change',()=>changeSeries(c)); label.append(input,document.createTextNode(c));$('country-options').append(label);

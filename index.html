@@ -76,7 +76,11 @@
               <div class="chips" id="series-chips"></div>
               <div class="chooser-wrap">
                 <button class="choose" id="choose" aria-expanded="false" aria-controls="country-menu"><span data-icon="settings"></span>选国家</button>
-                <fieldset class="popover country-menu" id="country-menu" hidden><legend class="sr-only">图上显示的国家</legend><div id="country-options"></div></fieldset>
+                <fieldset class="popover country-menu" id="country-menu" hidden>
+                  <legend class="sr-only">图上显示的国家</legend>
+                  <div class="country-actions"><button type="button" id="countries-all">全选</button><button type="button" id="countries-clear">清空</button></div>
+                  <div id="country-options"></div>
+                </fieldset>
               </div>
             </div>
             <div id="chart"></div>

@@ -109,13 +109,22 @@
       return labelMonth(month);
     }
 
+    function rankedSeries(month) {
+      // Match the monthly ranking: exact official values, then estimates, then graph readings.
+      const rankValue = s => valueAt(s.official, month) ?? valueAt(s.estimates, month) ?? valueAt(s.graph, month) ?? -Infinity;
+      return [...series].sort((a, b) => {
+        const av = rankValue(a), bv = rankValue(b);
+        return av === bv ? 0 : av > bv ? -1 : 1;
+      });
+    }
+
     function syncAria() {
       surface.setAttribute('aria-valuemin', '1');
       surface.setAttribute('aria-valuemax', String(n || 1));
       surface.setAttribute('aria-valuenow', String(selected + 1));
       const month = months[selected];
       if (!month) return;
-      const details = series.map(s => s.name + ' ' + (monthValues(s, month, officialEnd)
+      const details = rankedSeries(month).map(s => s.name + ' ' + (monthValues(s, month, officialEnd)
         .map(([label, v]) => label + ' ' + number(v)).join('，') || '无数据'));
       surface.setAttribute('aria-valuetext', [monthCaption(month), ...details].join('；'));
     }
@@ -130,7 +139,7 @@
       }));
       const body = document.createDocumentFragment();
       if (showTooltip) body.append(html('div', 'trend-tip-title', monthCaption(month)));
-      for (const s of series) {
+      for (const s of rankedSeries(month)) {
         const values = monthValues(s, month, officialEnd);
         const main = valueAt(s.estimates, month) ?? valueAt(s.official, month) ?? valueAt(s.graph, month);
         if (main !== null) guide.append(svg('circle', { cx: x, cy: y(main), r: 3.7, fill: s.color, stroke: '#fff', 'stroke-width': 1.4 }));
